@@ -1,0 +1,64 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.5.4'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+ext {
+    springAiVersion = '1.0.0'
+    langchain4jVersion = '1.1.0'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.ai:spring-ai-bom:${springAiVersion}"
+        mavenBom "dev.langchain4j:langchain4j-bom:${langchain4jVersion}"
+    }
+}
+
+dependencies {
+    // Spring Boot Starters
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    
+    // Spring AI (1.0.0 GA naming convention)
+    implementation 'org.springframework.ai:spring-ai-starter-model-openai'
+    
+    // LangChain4j
+    implementation 'dev.langchain4j:langchain4j'
+    implementation 'dev.langchain4j:langchain4j-open-ai'
+    implementation 'dev.langchain4j:langchain4j-embeddings-all-minilm-l6-v2'
+    implementation 'dev.langchain4j:langchain4j-web-search-engine-tavily'
+    
+    // LangGraph4j 대신 순수 Java로 StateGraph 패턴 구현
+    
+    // Database
+    runtimeOnly 'com.h2database:h2'
+    
+    // Tools and Utilities
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    implementation 'me.paulschwarz:spring-dotenv:4.0.0'
+    implementation 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    
+    // Test Dependencies
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
